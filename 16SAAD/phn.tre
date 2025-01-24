@@ -1,0 +1,124 @@
+#NEXUS
+begin taxa;
+	dimensions ntax=20;
+	taxlabels
+	HIMB59_AG-893-E15
+	HIMB59_AG-894-I22
+	HIMB59_AG-895-L18
+	HIMB59_AG-898-N21
+	HIMB59_AG-899-K21
+	HIMB59_AG-904-K16
+	HIMB59_AG-908-G17
+	HIMB59_AG-911-E22
+	HIMB59_AG-911-I02
+	HIMB59_AG-912-G03
+	HIMB59_AG-915-I10
+	HIMB59_AG-916-M14
+	Pelagibacter_AG-359-M21
+	Pelagibacter_AG-414-L09
+	Pelagibacter_AG-899-N21
+	Pelagibacter_AG-904-F17
+	Pelagibacter_AG-908-F18
+	Pelagibacter_AG-915-K13
+	Rhodobacteraceae_AG-892-M03
+	Rhodobacteraceae_AG-899-B02
+;
+end;
+
+begin trees;
+	tree tree_1 = [&R] (HIMB59_AG-893-E15:1.0E-6,((HIMB59_AG-908-G17:1.0E-6,(HIMB59_AG-899-K21:6.13E-4,HIMB59_AG-911-E22:9.2E-4)[&label=0.333]:1.0E-6)[&label=0.333]:1.0E-6,HIMB59_AG-895-L18:1.0E-6)[&label=0.333]:1.0E-6,(((HIMB59_AG-912-G03:1.0E-6,HIMB59_AG-894-I22:3.07E-4)[&label=1]:6.13E-4,HIMB59_AG-898-N21:9.21E-4)[&label=0.333]:1.0E-6,((HIMB59_AG-911-I02:3.06E-4,HIMB59_AG-915-I10:0.001535)[&label=0.333]:1.0E-6,(HIMB59_AG-904-K16:0.001234,(HIMB59_AG-916-M14:0.00238,((((Pelagibacter_AG-899-N21[&!color=#ff0000]:3.08E-4,(Pelagibacter_AG-359-M21[&!color=#ff0000]:6.17E-4,Pelagibacter_AG-414-L09[&!color=#ff0000]:0.001235)[&label=0.333,!color=#ff0000]:1.0E-6)[&label=0.333,!color=#ff0000]:1.0E-6,(Pelagibacter_AG-904-F17[&!color=#ff0000]:3.09E-4,Pelagibacter_AG-915-K13[&!color=#ff0000]:6.17E-4)[&label=1,!color=#ff0000]:9.25E-4)[&label=1,!color=#ff0000]:0.005467,Pelagibacter_AG-908-F18[&!color=#CCAA30]:0.004264)[&label=0.986]:0.003079,(Rhodobacteraceae_AG-899-B02:0.001787,Rhodobacteraceae_AG-892-M03:0.001679)[&label=1]:0.118077)[&label=1]:0.003908)[&label=1]:0.001645)[&label=1]:9.2E-4)[&label=0.333]:1.0E-6)[&label=0.333]:1.0E-6);
+	tree tree_2 = [&R] ((Rhodobacteraceae_AG-899-B02:0.001787,Rhodobacteraceae_AG-892-M03:0.001679):0.0590385,((((Pelagibacter_AG-899-N21:3.08E-4,(Pelagibacter_AG-359-M21:6.17E-4,Pelagibacter_AG-414-L09:0.001235):1.0E-6):1.0E-6,(Pelagibacter_AG-904-F17:3.09E-4,Pelagibacter_AG-915-K13:6.17E-4):9.25E-4):0.005467,Pelagibacter_AG-908-F18:0.004264):0.003079,(HIMB59_AG-916-M14:0.00238,(HIMB59_AG-904-K16:0.001234,((HIMB59_AG-911-I02:3.06E-4,HIMB59_AG-915-I10:0.001535):1.0E-6,(((HIMB59_AG-912-G03:1.0E-6,HIMB59_AG-894-I22:3.07E-4):6.13E-4,HIMB59_AG-898-N21:9.21E-4):1.0E-6,(HIMB59_AG-893-E15:1.0E-6,((HIMB59_AG-908-G17:1.0E-6,(HIMB59_AG-899-K21:6.13E-4,HIMB59_AG-911-E22:9.2E-4):1.0E-6):1.0E-6,HIMB59_AG-895-L18:1.0E-6):1.0E-6):1.0E-6):1.0E-6):9.2E-4):0.001645):0.003908):0.0590385);
+
+end;
+
+begin figtree;
+	set appearance.backgroundColorAttribute="Default";
+	set appearance.backgroundColour=#ffffff;
+	set appearance.branchColorAttribute="User selection";
+	set appearance.branchColorGradient=false;
+	set appearance.branchLineWidth=1.0;
+	set appearance.branchMinLineWidth=0.0;
+	set appearance.branchWidthAttribute="Fixed";
+	set appearance.foregroundColour=#000000;
+	set appearance.hilightingGradient=false;
+	set appearance.selectionColour=#2d3680;
+	set branchLabels.colorAttribute="User selection";
+	set branchLabels.displayAttribute="Branch times";
+	set branchLabels.fontName="sansserif";
+	set branchLabels.fontSize=8;
+	set branchLabels.fontStyle=0;
+	set branchLabels.isShown=false;
+	set branchLabels.significantDigits=4;
+	set layout.expansion=0;
+	set layout.layoutType="RECTILINEAR";
+	set layout.zoom=0;
+	set legend.attribute="label";
+	set legend.fontSize=10.0;
+	set legend.isShown=false;
+	set legend.significantDigits=4;
+	set nodeBars.barWidth=4.0;
+	set nodeBars.displayAttribute=null;
+	set nodeBars.isShown=false;
+	set nodeLabels.colorAttribute="User selection";
+	set nodeLabels.displayAttribute="Node ages";
+	set nodeLabels.fontName="sansserif";
+	set nodeLabels.fontSize=8;
+	set nodeLabels.fontStyle=0;
+	set nodeLabels.isShown=false;
+	set nodeLabels.significantDigits=4;
+	set nodeShapeExternal.colourAttribute="User selection";
+	set nodeShapeExternal.isShown=false;
+	set nodeShapeExternal.minSize=10.0;
+	set nodeShapeExternal.scaleType=Width;
+	set nodeShapeExternal.shapeType=Circle;
+	set nodeShapeExternal.size=4.0;
+	set nodeShapeExternal.sizeAttribute="Fixed";
+	set nodeShapeInternal.colourAttribute="User selection";
+	set nodeShapeInternal.isShown=false;
+	set nodeShapeInternal.minSize=10.0;
+	set nodeShapeInternal.scaleType=Width;
+	set nodeShapeInternal.shapeType=Circle;
+	set nodeShapeInternal.size=4.0;
+	set nodeShapeInternal.sizeAttribute="Fixed";
+	set polarLayout.alignTipLabels=false;
+	set polarLayout.angularRange=0;
+	set polarLayout.rootAngle=0;
+	set polarLayout.rootLength=100;
+	set polarLayout.showRoot=true;
+	set radialLayout.spread=0.0;
+	set rectilinearLayout.alignTipLabels=false;
+	set rectilinearLayout.curvature=0;
+	set rectilinearLayout.rootLength=100;
+	set scale.offsetAge=0.0;
+	set scale.rootAge=1.0;
+	set scale.scaleFactor=1.0;
+	set scale.scaleRoot=false;
+	set scaleAxis.automaticScale=true;
+	set scaleAxis.fontSize=8.0;
+	set scaleAxis.isShown=false;
+	set scaleAxis.lineWidth=1.0;
+	set scaleAxis.majorTicks=1.0;
+	set scaleAxis.minorTicks=0.5;
+	set scaleAxis.origin=0.0;
+	set scaleAxis.reverseAxis=false;
+	set scaleAxis.showGrid=true;
+	set scaleBar.automaticScale=true;
+	set scaleBar.fontSize=10.0;
+	set scaleBar.isShown=true;
+	set scaleBar.lineWidth=1.0;
+	set scaleBar.scaleRange=0.0;
+	set tipLabels.colorAttribute="User selection";
+	set tipLabels.displayAttribute="Names";
+	set tipLabels.fontName="sansserif";
+	set tipLabels.fontSize=8;
+	set tipLabels.fontStyle=0;
+	set tipLabels.isShown=true;
+	set tipLabels.significantDigits=4;
+	set trees.order=false;
+	set trees.orderType="increasing";
+	set trees.rooting=true;
+	set trees.rootingType="User Selection";
+	set trees.transform=false;
+	set trees.transformType="cladogram";
+end;
+
