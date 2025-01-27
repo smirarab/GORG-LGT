@@ -2,7 +2,8 @@ Code and data to reproduce Several figures in the paper related to gene trees.
 
 ## Requirement:
 
-* The bash script `comptue-closest.sh` relies on the fantastic [newick utilities](https://github.com/tjunier/newick_utils) toolkit. But results of it are provided. 
+* The bash script `comptue-closest.sh` relies on the fantastic [newick utilities](https://github.com/tjunier/newick_utils) toolkit. But results of it are provided.
+* R Scripts require R (works with 4.2.2)
 
 ## Files
 
