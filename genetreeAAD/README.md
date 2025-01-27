@@ -1,8 +1,16 @@
+Code and data to reproduce Several figures in the paper related to gene trees. 
+
+## Requirement:
+
+* The bash script `comptue-closest.sh` relies on the fantastic [newick utilities](https://github.com/tjunier/newick_utils) toolkit. But results of it are provided. 
+
+## Files
+
 * [GORGv1_16SSAGs_aai_summary.csv.xz](GORGv1_16SSAGs_aai_summary.csv.xz): Pairwise AAD results
 
 * [all-gene-trees.zip](all-gene-trees.zip): all gene family trees in newick format
 
-* [comptue-closest.sh](comptue-closest.sh): a script to compute closest distance from the gene trees. It relies on the fantastic [newick utilities](https://github.com/tjunier/newick_utils) toolkit.
+* [comptue-closest.sh](comptue-closest.sh): a script to compute the closest distance from the gene trees. It relies on the fantastic [newick utilities](https://github.com/tjunier/newick_utils) toolkit.
 
 * `all-closest-dist.txt.xz`: top three closest leaves to each leaf in the gene tree (query) and their path length on the gene tree to the query
 
