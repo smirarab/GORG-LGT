@@ -3,6 +3,10 @@ This is the simulation procedure to
 1. evaluate the accuracy of GND and AAD estimates ("codon" simulations).
 2. evaluate the accuracy of the LGT-free model ("nt" simulations)
 
+### Requirement:
+
+* Python3
+
 ### Goal: 
 * Generate a set of mock genomes by introducing genomic changes only through point mutations (no genome rearrangements or HGT).  
 * Given a genome X, add mutations to it in either the AA space and back-translated them to nucleotides ("codon") or in nucleotide space directly ("nt") to get a mock genome X'. Vary the parameters of the evolutionary model to get multiple mock genomes.
