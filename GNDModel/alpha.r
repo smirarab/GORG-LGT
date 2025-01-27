@@ -299,7 +299,7 @@ ggplot(aes(y=data-model,x=GND/100,color=as.factor(100-as.numeric(sub("X","",vari
   theme(legend.position = c(.8,.85))+
   facet_wrap(~type)
 
-ggsave("divergence-main-real-sim.pdf",width=8,height = 4)
+ggsave("S1b.pdf",width=8,height = 4)
 #Figure S1. 
 
 
