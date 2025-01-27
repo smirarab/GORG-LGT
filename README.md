@@ -1,5 +1,7 @@
 # GORG-HGT
-Analysis of HGT in the GORG dataset
+Analysis of LGT across the GORG dataset. Four sets of analyses are provided here in the directories below. 
+
+Each directory has **its own README.md** file.  
 
 * For Figures 1b, 1c, and supplementary S8, see [GNDModel](GNDModel/)
 	* The `simulations` folder is generated using the simulator of the next item.
