@@ -1,4 +1,4 @@
-# GORG-HGT
+# GORG-LGT
 Analysis of LGT across the GORG Tropics dataset. Five sets of analyses are provided here in the directories below. 
 
 Each directory has **its own README.md** file.  
