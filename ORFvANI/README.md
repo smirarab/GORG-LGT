@@ -54,10 +54,28 @@ What do the columns mean?
 * <ins>ani_aln_cov_ba</ins>: Percent of subject genome that pyANI could align to query genome
 * <ins>GND</ins>: Genome-wide Nucleotide Difference between the subject and query genome (i.e. the inverse of their Average Nucleotide Identity)
 
-
 ---
 #### Installation:
+Install [Nextflow](https://www.nextflow.io/docs/latest/install.html) along with the a container manager (either Singularity or Docker).
+
+Make a [nextflow.config](https://www.nextflow.io/docs/latest/config.html) file with configurations appropriate for your system.
+
+#### To run this pipeline:
+Create a working directory with the following items:
+1. The [orfs_vs_ani.nf](https://github.com/smirarab/GORG-LGT/blob/master/ORFvANI/orfs_vs_ani.nf) nextflow script
+2. The directory [input/](https://github.com/smirarab/GORG-LGT/tree/master/ORFvANI/input) containing the zipped, simulated genomes to compare
+3. Your nextflow.config file
+
+Then, run the pipeline
+
+``nextflow run orfs_vs_ani.nf``
 
 
+Upon running, nextflow will use the container manager (either Singularity or Docker--whichever you installed) to download and install the following dependencies:
 
-#### Test data
+pyANI version [0.2.9](https://quay.io/repository/biocontainers/pyani?tab=tags)
+
+Prokka version [1.14.6](https://quay.io/repository/biocontainers/prokka?tab=tags)
+
+BLAST version [2.7.1](https://quay.io/repository/biocontainers/blast)
+
