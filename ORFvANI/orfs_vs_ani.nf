@@ -4,7 +4,7 @@ nextflow.enable.dsl=2
 /*
 I. Inputs:
 
-Expects an input folder called ./gzipped_experiments/ that contains several tarfiles (e.g. AG-359-G18_a5.tar.gz, AG-359-G18_a22.tar.gz, ).
+A directory called ./input/ that contains several tarfiles (e.g. AG-359-G18_a5.tar.gz, AG-359-G18_a22.tar.gz, ).
 
 Each of these tarfiles is a zipped "experiment" folder. (There are 58 experiments in all.)
 
@@ -46,7 +46,7 @@ params.alpha6 = "/alpha/alpha6.74-c1-gl904-orf1.csv"
 params.alpha4 = "/alpha/alpha4.59-c1-gl904-orf1.csv"
 
 workflow {
-    CH_num_pair_AND_tar = Channel.fromPath("./mid/2_gzipped_inputs/*.tar.gz")
+    CH_num_pair_AND_tar = Channel.fromPath("./input/*.tar.gz")
             .flatten()                                                                                      // Emit each demultiplexed fastq as its own object. E.g. blahblah_R1.fastq.gz
             .map { file -> tuple(file.simpleName, file) }
 
@@ -340,7 +340,7 @@ process PYANI {
     cpus = 24
     memory = { 10.GB * task.attempt }
     errorStrategy = 'finish'
-    beforeScript 'module load anaconda3/2019.07' // environment with pyani v. 0.2.9 installed
+    container='docker://quay.io/biocontainers/pyani:0.2.9--pyh24bf2e0_0'
     publishDir "results/raw/${ID}/", mode: "copy"
     input: tuple val(ID), path(unzip)
     output: tuple val(ID), path("${ID}_pyani")
