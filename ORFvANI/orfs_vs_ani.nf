@@ -41,10 +41,6 @@ params.num_inputs = 1
 
 params.outdir = "results"
 
-params.alpha10 = "/alpha/alpha10-c1-gl904-orf1.csv"
-params.alpha6 = "/alpha/alpha6.74-c1-gl904-orf1.csv"
-params.alpha4 = "/alpha/alpha4.59-c1-gl904-orf1.csv"
-
 workflow {
     CH_num_pair_AND_tar = Channel.fromPath("./input/*.tar.gz")
             .flatten()                                                                                      // Emit each demultiplexed fastq as its own object. E.g. blahblah_R1.fastq.gz
@@ -76,178 +72,7 @@ workflow {
 
     CH_FINAL_TABLES = BLAST_ORFS_TO_SELF.out.join(TABULATE_ANI.out).join(COUNT_ORFS.out)
     SUMMARIZE_EXPERIMENT(CH_FINAL_TABLES)
-    CH_all_tables = SUMMARIZE_EXPERIMENT.out.csv.collect()
-    CH_each_alpha_AND_table = CH_all_tables.flatten().map{ it -> tuple(it.simpleName.replaceAll('_results','').replaceAll(/(.+)_a/,''), it)}
-    CH_grouped_by_alpha = CH_each_alpha_AND_table.groupTuple()
-
-    CH_alpha_1SAGtable_vs_allSAGtablesSameAlpha = CH_each_alpha_AND_table.combine(CH_grouped_by_alpha, by:0)
-    
-    CH_SAGid_alpha_1SAGtable_vs_allSAGTablesSameAlpha = CH_alpha_1SAGtable_vs_allSAGtablesSameAlpha.map{ it -> tuple(it[1].simpleName.toString().replaceAll(/_(.+)/,''), it[0], it[1], it[2]) } // Adds 'SAGid' (e.g. "AM-359-G18") to tuple, for sake of naming output files
-
-    // Allows --dev mode to run GGPLOT on just 1 sample emitted by this channel
-    CH_SAGid_alpha_1SAGtable_vs_allSAGTablesSameAlpha = CH_SAGid_alpha_1SAGtable_vs_allSAGTablesSameAlpha.take ( params.dev ? params.num_inputs : -1)
-    
-    GGPLOT(CH_SAGid_alpha_1SAGtable_vs_allSAGTablesSameAlpha)
     }
-
-
-
-process GGPLOT {
-    errorStrategy = 'finish'
-    beforeScript 'module load anaconda'
-    publishDir "results/plots/${alpha}/divergence/", pattern: "${ID}_${alpha}_divergence.pdf", mode: "copy"
-    publishDir "results/plots/${alpha}/shared-genes-percent/", pattern: "${ID}_${alpha}_shared-genes-percent.pdf", mode: "copy"
-
-    conda '/mnt/scgc/scgc_nfs/opt/common/anaconda3a/envs/r_ggplot2'
-    // env r_ggplot2 created like so: module load anaconda3; conda create --prefix /mnt/scgc/scgc_nfs/opt/common/anaconda3a/envs/r_ggplot2 conda-forge::r-ggpubr conda-forge::r-ggplot2 conda-forge::r-dplyr
-
-    input: tuple val(ID), val(alpha), path(main_csv, stageAs: "?/*"), path(other_csvs)
-    output: tuple val(ID), path("${ID}_${alpha}_divergence.pdf"), path("${ID}_${alpha}_shared-genes-percent.pdf")
-
-    script:
-    """
-    #!/usr/bin/env Rscript
-
-    require(ggplot2);require(scales); require(reshape2); library(ggpubr);library(dplyr)
-
-    #a <- "5"
-    #bd <- read.csv(paste0("./result_tables_2000/AG-359-G18_a", a, "_results.csv"))
-    bd <- read.csv("${main_csv}")
-
-    all_files  = list.files(path="./", pattern="*.csv", full.names=TRUE, recursive=FALSE)
-    files <- all_files[ !grepl("${ID}", all_files) ] # Exclude the file that is redundant with the query SAG
-    
-    for (g in files) {
-    data <- read.csv(g)
-    bd <- rbind(bd, data)
-    }
-
-    head(bd)
-
-    nrow(bd)
-    
-    bd_filtered <- bd[, c("qsag", "ssag", "mean_pident", "GND")]
-    bd_filtered\$est_GND <- (100 - bd_filtered\$mean_pident)/100
-
-    extract_base_genome <- function(string) {
-      strsplit(string, "_")[[1]][1]
-    }
-
-    nrow(bd)
-    head(bd)
-    
-    bd\$gndbin=cut(bd\$mean_pident/100,breaks=(670:2000)/2000, labels =round((1-(671:2000)/2000+0.0005)*100,digits=5))
-    dcast(data=bd[,c("X99_pid_500.1500bp_orthologs","gndbin")],formula=gndbin~.)
-    nrow(bd)
-    head(bd)
-    nrow(bd[bd\$X99_pid_500.1500bp_orthologs == 0,])
-    
-    (bd %>% mutate(SAG = sub("_a5_gnd.*\$","",ssag)) %>%
-        filter(1-mean_pident/100 < 0.0042) %>% 
-        filter(1-mean_pident/100 > 0.0037) %>% 
-        filter(SAG == "AG-892-F15") 
-    )
-    
-    #Completeness is 1 for simulated dataset
-    bdrm <- bd
-    bdrm\$CompA <- 1
-    bdrm\$CompB <- 1
-    ncol(bdrm)
-    head(bdrm)
-    
-    bdrmi=bdrm[bdrm\$total_hits> 800-50*(100-bdrm\$mean_pident),]
-    nrow(bdrmi)
-    head(bdrmi)
-
-    ### This is what we used
-    alphas=quantile(with(bdrmi[bdrmi\$mean_pident!= 100 & bdrmi\$stdev_pident!=0 &  bdrmi\$mean_pident <95 & bdrmi\$mean_pident > 80  &
-                              !is.na(bdrmi\$total_hits)   & bdrmi\$total_hits > 4,
-                            ,], 
-                         1/( (stdev_pident/100) /(1-mean_pident/100) )^2 ),c(0.1,0.5,0.9))
-    
-    alphas
-    
-    
-    model=rbind(
-      data.frame(read.csv('${params.alpha4}'),alpha=4.59,c=1,gl=904,orf=1),
-      data.frame(read.csv('${params.alpha6}'),alpha=6.74,c=1,gl=904,orf=1),
-      data.frame(read.csv('${params.alpha10}'),alpha=10,c=1,gl=904,orf=1)
-    )
-    
-    head(model)
-    model\$GND = round(model\$GND,5)
-    tail(model)
-    
-    head(bdrmi)
-    
-    # bdrmim = melt(bdrmi,measure.vars = 10:23)
-    bdrmim = melt(bdrmi,measure.vars = 11:30)
-    nrow(bdrmim)
-    bdrmim = bdrmim[grepl("500.1500bp" ,bdrmim\$variable),]
-    bdrmim\$adjusted = with(bdrmim,value*(1/sgene_count_500.1500bp/CompB+1/qgene_count_500.1500bp/CompA)/2 )
-    bdrmim\$similarity=sub("_.*","",bdrmim\$variable)
-    head(bdrmim)
-    levels(bdrmim\$variable)
-    bdrmim\$SAG = sub("_a5_gnd.*\$","",bdrmim\$ssag)
-
-    # View(bdrmim[bdrmim\$similarity=="X99" & bdrmim\$adjusted > 0.8 & bdrmim\$adjusted < 0.85 ,])
-    
-    #View(bdrmim[bdrmim\$similarity=="X99",] %>% 
-    #  filter(1-mean_pident/100 < 0.006) %>% 
-    #  filter(1-mean_pident/100 > 0.002) %>% 
-    #  filter(SAG == "AG-892-F15") %>%
-    #  filter(grepl(".*_gnd00000",qsag)|grepl(".*_gnd00000",ssag))
-    #  )
-    
-    ggplot(aes(y=  adjusted ,
-               color="Data", x=(1-mean_pident/100)),
-           data=bdrmim[bdrmim\$similarity=="X99" ,])+
-      #geom_hline(yintercept = 0.96)+
-      #geom_vline(xintercept = c(0.0026,0.003))+
-      geom_point(aes(color=ifelse(grepl(".*AG-891-K05",ssag),"AG-891-K05"," others")),alpha=0.75,size=0.95)+ #geom_smooth(se=F,aes(color="Data (fit)"),size=1)+
-      geom_line(aes(y=`.`,color="Data (mean)",x=as.numeric(as.character(gndbin))/100),
-                data=dcast(gndbin+variable~.,data=bdrmim[bdrmim\$similarity=="X99",c("gndbin","variable", "adjusted")],fun.aggregate = mean),
-                size=1)+
-      geom_ribbon(aes(ymin=`4.59`,y=`6.74`,ymax=`10`,x=GND/100,color="Model (80% CI alpha)"),
-                  data=dcast(GND~alpha,data=model[,c("GND", "X99", "alpha")],value.var = "X99"),
-                  size=0.2,alpha=0.3,fill="#EE60BB",show.legend = F)+
-      geom_line(aes(y=X99/orf/c,x=GND/100, color="Model (median alpha)"),
-                data=model[model\$alpha==6.74,],
-                size=.81,alpha=0.68)+
-      scale_x_continuous(name="GND",labels=percent)+
-      scale_linetype_manual(name=expression(alpha),values=c(3,1,2))+
-      scale_color_manual(name="",values = c("gray50","#1055EE","#FF60AA","#BB3333","#770010"))+
-      scale_y_continuous(name="Shared genes (adjusted for incompleteness)",labels=percent,breaks=c(0,0.2,0.4,0.6,0.8,1))+
-      theme_bw()+
-      theme(legend.position = c(.8,.7),panel.grid.minor = element_blank())+
-      coord_cartesian(xlim = c(0,0.04))
-    ggsave("${ID}_${alpha}_shared-genes-percent.pdf",width=6.5,height = 4.5)
-
-
-    ds = merge(dcast(variable+GND~alpha,data=melt(model[,c(1,3:12,14)],measure.vars = 2:11)[,c("GND","alpha","variable","value")],value.var = "value"),
-               dcast(gndbin+similarity~"real",data=bdrmim[,c("gndbin","similarity", "adjusted")],fun.aggregate = mean),
-               by.x=c("variable","GND"),by.y=c("similarity","gndbin"))
-    ds=melt(ds,measure.vars = 3:5,variable.name = "alpha",value.name = "model")
-    
-    ds = merge(dcast(variable+GND~alpha,data=melt(model[,c(1,3:12,14)],measure.vars = 2:11)[,c("GND","alpha","variable","value")],value.var = "value"),
-               dcast(gndbin+similarity~"real",data=bdrmim[,c("gndbin","similarity", "adjusted")],fun.aggregate = mean),
-               by.x=c("variable","GND"),by.y=c("similarity","gndbin"))
-    ds=melt(ds,measure.vars = 3:5,variable.name = "alpha",value.name = "model")
-    
-    
-    ggplot(aes(y=real-model,x=GND/100,color=as.factor(100-as.numeric(sub("X","",variable)))),data=ds[ds\$alpha == 6.74 & ds\$variable %in% c("X99","X98.5","X98"),])+
-      geom_line(size=0.8)+
-      geom_point(size=0.8)+
-      scale_color_manual(name="Gene ND threshold",values=c("red","#009900","blue"))+
-      scale_x_continuous(lim=c(0,0.13),labels = function(x) x*100,breaks = (0:13)/100,"Genomic nucleotid difference, %")+
-      #facet_wrap(~alpha,labeller = label_both,nrow=2)+
-      theme_classic()+
-      geom_hline(yintercept = 0,color="grey")+
-      theme(legend.position = c(.8,.85))+
-      coord_cartesian(ylim = c(-0.15,0.25))
-    ggsave("${ID}_${alpha}_divergence.pdf",width=6.5,height = 4.5)
-    """
-}
 
 process BLAST_ORFS_TO_SELF {
     tag "All v. all BLAST for ORFs from experiment ${ID} (across all 31 mutated genomes)"
@@ -255,7 +80,7 @@ process BLAST_ORFS_TO_SELF {
     memory = { 10.GB * task.attempt }
     errorStrategy = 'finish'
     publishDir "results/raw/${ID}/", mode: "copy"
-    beforeScript 'module load anaconda/2.1.0' // load the environment in which BLAST is installed
+    container='docker://quay.io/biocontainers/blast:2.7.1--h4422958_6'
     input: tuple val(ID), path(FILES)
     output:
         tuple val("${ID}"), path("${ID}_blast.tsv")
