@@ -33,7 +33,27 @@
 * Outputs
   * For each input genome set, it produces a separate table. We generated 56 tables, found [here](https://github.com/smirarab/GORG-LGT/tree/master/GNDModel/simulations)
 
-#### Understanding the table:
+#### Understanding the output table:
+What do the columns mean?
+
+* <ins>qsag</ins>: the query genome used in BLASTn, e.g. "AG-359-G18_a22_gnd00000"
+* <ins>ssag</ins>: the subject genome, e.g. "AG-359-G18_a22_gnd00005"
+* <ins>qgene_count</ins>: number of ORFs (predicted by prokka) in query genome
+* <ins>sgene_count</ins>: number of ORFs (predicted by prokka) in subject genome
+* <ins>qgene_count_500-1500bp</ins>: number of ORFs for size range 500-1500 bp in query genome
+* <ins>sgene_count_500-1500bp</ins>: number of ORFs for size range 500-1500 bp in subject genome
+* <ins>total_hits</ins>: number of ORFs hitting between the query and subject genome (via BLASTn)
+* <ins>mean_pident</ins>: mean % identity across all ORFs hitting from query to subject genome
+* <ins>median_pident</ins>: median % identity of all " " "
+* <ins>stdev_pident</ins>: standard deviation of all " " " "
+* <ins>99.9_pid_orthologs</ins>: number of BLASTn hits with pid => 99.9 between query and subject genomes
+* <ins>99.9_pid_500-1500bp_orthologs</ins>: number of " " " " for size range 500-1500
+  * Note: See also columns for percent identities of 99.8, 99.7, 99.6, 99.5, 97.5 and 97
+* <ins>ani</ins>: Average Nucleotide Identity between query and subject genome (via pyANI)
+* <ins>ani_aln_cov_ab</ins>: Percent of query genome that pyANI could align to subject genome
+* <ins>ani_aln_cov_ba</ins>: Percent of subject genome that pyANI could align to query genome
+* <ins>GND</ins>: Genome-wide Nucleotide Difference between the subject and query genome (i.e. the inverse of their Average Nucleotide Identity)
+
 
 ---
 #### Installation:
