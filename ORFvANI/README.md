@@ -7,12 +7,12 @@
    * **sim/** - A subdirectory with zipped sets of simulated genomes, which were prepared in the [GNDSim](GNDSim) section
 * **real_ORFvANI.nf** A nextflow pipeline that analyzes *real* genomes to tabulate the number of ORFs as a function of ANI.
 * **sim_ORFvANI.nf** -- A nextflow pipeline that analyzes *simulated* genomes " " " " "
-* NOTE: The only methological differences between real_ORFvANI.nf and sim_ORFvANI.nf is that first takes a *list* of genomes, and the second takes a list of *zipped directories* of genomes (to allow iteration over multiple simulated genome experiments)
+* NOTE: The only methological differences between real_ORFvANI.nf and sim_ORFvANI.nf is that first takes a directory of genomes, and the second takes a directory with 56 *zipped subdirectories* of genomes (to allow iteration over 56 simulated genome experiments)
   
 ### What do these pipelines do?
 They take either real genomes (i.e. with LGT) or simulated genomes (LGT-free). Then they tabulate the number of orthologous genes shared between genomes, as a function of ANI.
 ### Why?
-To track how homology (or its detectability) erodes as genomes diverge in sequence space. Calculating DIGS (DIfferential Gene Share) requires a comparison of how this erodes in genomes with vs. without LGT.
+To track how homology (or its detectability) erodes as genomes diverge in sequence space. We did this because calculating DIGS (DIfferential Gene Share) requires a comparison of how readily homology erodes in genomes with vs. without LGT.
 
 #### The basic steps:
 1. Each nextflow pipeline takes a set of genomes.
@@ -25,24 +25,24 @@ To track how homology (or its detectability) erodes as genomes diverge in sequen
 
 
 #### Inputs for real_ORFvANI.nf:
-* The pipeline takes **/input/real/**; directory containing several hundred real genomes, named like "AM-550-G11_contigs.fasta.gz"
+* The pipeline takes [**/input/real/**](https://github.com/smirarab/GORG-LGT/tree/master/ORFvANI/input/real); a directory containing several hundred real genomes, named like "AM-550-G11_contigs.fasta.gz"
 * NOTE: Expects genome sequence names in default SPAdes format, like ">AG-359-G18_NODE_1"
   
 #### Inputs for sim_ORFvANI.nf:
-  * This pipeline takes (at least 1) zipped set of simulated genomes. We analyzed 56 sets, found here [input]
-  * Expects each set as a tarball named something like "AG-359-G18_a22.tar.gz"
+  * This pipeline takes [**/input/sim/**](https://github.com/smirarab/GORG-LGT/tree/master/ORFvANI/input/sim) a directory with 56 zipped sets of simulated genomes. (We call each set an "experiment").
+  * Each experiment is provided as a tarball named something like "AG-359-G18_a22.tar.gz"
   * The tarball contains genomes named like "AG-899-G06_a22_gnd001.fasta", "AG-899-G06_a22_gnd002.fasta", etc.
   * Expects genome sequence names in default SPAdes format, like ">AG-359-G18_NODE_1"
   * What do the genome names mean?
     * The rootname [AG-359-G18] is the name of a real bacterial genome from the GORG-tropics dataset.
     * The first suffix (either [a5] or [a22]) represents the alpha value used in the model that simulated point mutations.
     * The last suffix (e.g. [gnd001] vs. [gnd002]) represents the simulated genome's GND from the real genome.
-  * For each input genome set, it produces a separate table. We generated 56 tables, found [here](XXX)
+  * NOTE: For each simulated genome experiment, the pipeline produces a separate table. So, 56 tables.
 
 #### Outputs:
 Each pipeline yields tabular outputs
-1. 1 table for the real_ORFvANI.nf, found here: (XXX)
-2. 56 tables for sim_ORFvANI.nf, found here: (XXX)
+1. One table for the real_ORFvANI.nf, found [here](https://github.com/smirarab/GORG-LGT/blob/master/GNDModel/220916_sag_pair_summary_shared_orfs_ani.csv.xz)
+2. 56 tables for sim_ORFvANI.nf, found [here](https://github.com/smirarab/GORG-LGT/tree/master/GNDModel/simulations)
    
 **Understanding the output table:**
 What do the columns mean?
@@ -67,21 +67,23 @@ What do the columns mean?
 
 ---
 #### Installation:
-Install [Nextflow](https://www.nextflow.io/docs/latest/install.html) along with the a container manager (either Singularity or Docker).
+Install [Nextflow](https://www.nextflow.io/docs/latest/install.html) along with a container manager (either Singularity or Docker).
 
 Make a [nextflow.config](https://www.nextflow.io/docs/latest/config.html) file with configurations appropriate for your system.
 
 #### Setup:
 Create a working directory with the following items:
-1. The [real_ORFvANI.nf](XXX) and [sim_ORFvANI.nf](XXX) nextflow scripts.
-2. The directory [input/](XXX)
+1. The [real_ORFvANI.nf](https://github.com/smirarab/GORG-LGT/blob/master/ORFvANI/real_ORFvANI.nf) and [sim_ORFvANI.nf](https://github.com/smirarab/GORG-LGT/blob/master/ORFvANI/sim_ORFvANI.nf) nextflow scripts.
+2. The directory [input/](https://github.com/smirarab/GORG-LGT/tree/master/ORFvANI/input) and its contents
 3. Your nextflow.config file
 
-Then, test-run a pipeline:
+#### Test run:
+
+Use "--dev" flag to test-run the pipeline, like so. It will test-run on a subset of only 10 input genomes.
 
 ``nextflow run real_ORFvANI.nf --dev``
 
-In this test run, only 5 of the real genomes will be compared.
+*Compute time*: ~5.7 CPU hours.
 
 Upon this first run, nextflow will use the container manager (either Singularity or Docker--whichever you installed) to download and install the following dependencies:
 
@@ -95,6 +97,6 @@ BLAST version [2.7.1](https://quay.io/repository/biocontainers/blast)
 
 ``nextflow run real_ORFvANI.nf``
 
-NOTE: XXX
+*NOTE: Compute time roughly squares with the number of input genomes* (due to BLAST and PyANI). So while it takes ~6 CPU hours to analyze 10 genomes, it will take ~3500 CPU  hours to analyze all 827 real genomes.
 
 ``nextflow run sim_ORFvANI.nf``
