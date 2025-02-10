@@ -70,16 +70,17 @@ Install [Nextflow](https://www.nextflow.io/docs/latest/install.html) along with 
 
 Make a [nextflow.config](https://www.nextflow.io/docs/latest/config.html) file with configurations appropriate for your system.
 
-#### To run this pipeline:
+#### Setup:
 Create a working directory with the following items:
-1. The [orfs_vs_ani.nf](https://github.com/smirarab/GORG-LGT/blob/master/ORFvANI/orfs_vs_ani.nf) nextflow script
-2. The directory [input/](https://github.com/smirarab/GORG-LGT/tree/master/ORFvANI/input) containing the zipped, simulated genomes to compare
+1. The [real_ORFvANI.nf]() and [sim_ORFvANI.nf]() nextflow scripts.
+2. The directory [input/]() containing the zipped, simulated genomes to compare
 3. Your nextflow.config file
 
-Then, run the pipeline
+Then, test-run a pipeline:
 
-``nextflow run orfs_vs_ani.nf``
+``nextflow run real_ORFvANI.nf --dev``
 
+In this test run, only 5 of the real genomes will be compared.
 
 Upon running, nextflow will use the container manager (either Singularity or Docker--whichever you installed) to download and install the following dependencies:
 
@@ -89,3 +90,8 @@ Prokka version [1.14.6](https://quay.io/repository/biocontainers/prokka?tab=tags
 
 BLAST version [2.7.1](https://quay.io/repository/biocontainers/blast)
 
+#### Run on full data:
+
+``nextflow run real_ORFvANI.nf``
+
+``nextflow run sim_ORFvANI.nf``
