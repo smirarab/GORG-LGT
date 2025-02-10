@@ -10,7 +10,7 @@
 * NOTE: The only methological differences between real_ORFvANI.nf and sim_ORFvANI.nf is that first takes a directory of genomes, and the second takes a directory with 56 *zipped subdirectories* of genomes (to allow iteration over 56 simulated genome experiments)
   
 ### What do these pipelines do?
-They take either real genomes (i.e. with LGT) or simulated genomes (LGT-free). Then they tabulate the number of orthologous genes shared between genomes, as a function of ANI.
+They take either real genomes (i.e. with LGT) or simulated genomes (LGT-free). Then they tabulate the number of orthologous genes shared between genomes, as a function of ANI (Average Nucleotide Identity).
 ### Why?
 To track how homology (or its detectability) erodes as genomes diverge in sequence space. We did this because calculating DIGS (DIfferential Gene Share) requires a comparison of how readily homology erodes in genomes with vs. without LGT.
 
