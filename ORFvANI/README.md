@@ -1,17 +1,19 @@
-## Comparing shared ORFs to ANI per genome (on LGT-free simulated genomes)
+## Comparing shared ORFs to ANI per genome
 
----  
-#### What this pipeline does: Tabulates the number of orthologous genes per genome set at different pct_id thresholds.
+---
+#### The ORFvANI repo contains:
+* **input/**
+   * **real/** - A subdirectory with real genomes from the GORG Tropics dataset
+   * **sim/** - A subdirectory with zipped sets of simulated genomes, which were prepared in the [GNDSim](GNDSim) section
+* **real_ORFvANI.nf** A nextflow pipeline that analyzes *real* genomes to tabulate the number of ORFs as a function of ANI.
+* **sim_ORFvANI.nf** -- A nextflow pipeline that analyzes *simulated* genomes " " " " "
+* NOTE: The only methological differences between real_ORFvANI.nf and sim_ORFvANI.nf is that first takes a *list* of genomes, and the second takes a list of *zipped directories* of genomes (to allow iteration over multiple simulated genome experiments)
+  
+#### What these pipelines do: They take either real genomes (i.e. with LGT) or simulated genomes (LGT-free), and tabulate the number of orthologous genes shared between genomes, as a function of ANI.
 #### Why? To track how homology (or its detectability) erodes as genomes diverge in sequence space.
 
-### Context within the study:
-* This pipeline takes simulated LGT-free genomes made in the [GNDSim](GNDSim) section.
-* It tabulates differences between the genomes (i.e. shared ORFs vs ANI).
-* These tables serve as inputs for plots generated in the [GNDModel](GNDModel) section.
-* In the study, we iterated this pipeline over 56 sets of simulated LGT-free genomes.
-
-#### How it works:
-1. Takes a set of simulated LGT-free genomes. (All simulations are copies of the same real genome but with different numbers of point-mutations added in silico).
+#### The basic steps:
+1. The nextflow pipeline takes a set of genomes.
 2. Runs pyANI comparison of all genomes in the set to calculate Average Nucleotide Identity.
 4. Uses prokka to call genes (i.e. ORFs) for each genome.
 2. Creates a BLAST database of all ORFs in the genome set.
@@ -19,21 +21,29 @@
 4. Summarizes each BLAST file per query genome, writes each summary per SAG to a file.
 5. Combines all summaries into one table, combines with pyANI output. Full outputs [here](https://github.com/smirarab/GORG-LGT/tree/master/GNDModel/simulations)
 
-#### Inputs and outputs:
-* Inputs
-  * This pipeline takes (at least 1) zipped set of simulated genomes. We analyzed 56 sets, found here [input](https://github.com/smirarab/GORG-LGT/tree/master/ORFvANI/input)
+
+#### Inputs for real_ORFvANI.nf:
+* The pipeline takes **/input/real/**; directory containing several hundred real genomes, named like "AM-550-G11_contigs.fasta.gz"
+* These are the "best" SAGs from GORG Tropics, in that they contain 16s genes and have CheckM1 completeness values => 80%.
+* NOTE: Expects genome sequence names in default SPAdes format, like ">AG-359-G18_NODE_1"
+  
+#### Inputs for sim_ORFvANI.nf:
+  * This pipeline takes (at least 1) zipped set of simulated genomes. We analyzed 56 sets, found here [input]
   * Expects each set as a tarball named something like "AG-359-G18_a22.tar.gz"
   * The tarball contains genomes named like "AG-899-G06_a22_gnd001.fasta", "AG-899-G06_a22_gnd002.fasta", etc.
-  * What do the names mean?
+  * Expects genome sequence names in default SPAdes format, like ">AG-359-G18_NODE_1"
+  * What do the genome names mean?
     * The rootname [AG-359-G18] is the name of a real bacterial genome from the GORG-tropics dataset.
     * The first suffix (either [a5] or [a22]) represents the alpha value used in the model that simulated point mutations.
     * The last suffix (e.g. [gnd001] vs. [gnd002]) represents the simulated genome's GND from the real genome.
-* Notes
-  * Expects genome sequence names in default SPAdes format, like ">AG-359-G18_NODE_1"
-* Outputs
   * For each input genome set, it produces a separate table. We generated 56 tables, found [here](https://github.com/smirarab/GORG-LGT/tree/master/GNDModel/simulations)
 
-#### Understanding the output table:
+#### Outputs:
+Each pipeline yields tabular outputs
+1. 1 table for the real_ORFvANI.nf, found here:
+2. 56 tables for sim_ORFvANI.nf, found here:
+   
+**Understanding the output table:**
 What do the columns mean?
 
 * <ins>qsag</ins>: the query genome used in BLASTn, e.g. "AG-359-G18_a22_gnd00000"
