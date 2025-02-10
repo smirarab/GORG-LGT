@@ -4,7 +4,7 @@ nextflow.enable.dsl=2
 /*
 I. Inputs:
 
-Expects an input folder called ./input/real_sags/ that contains 827 SAGs from the GORG tropics dataset as zipped fasta files (e.g. AG-359-G18_a5.tar.gz, AG-359-G18_a22.tar.gz, ).
+Expects an input folder called ./input/real/ that contains 827 SAGs from the GORG tropics dataset as zipped fasta files (e.g. AG-359-G18_a5.tar.gz, AG-359-G18_a22.tar.gz, ).
 
 III. So what does this pipeline do?
 
@@ -16,7 +16,7 @@ III. So what does this pipeline do?
 
 
 IV. What command did I use to run this nextflow job?
-nextflow run real_orfs_vs_ani.nf
+nextflow run real_ORFvANI.nf
 
 BTW: ask me (Greg Gavelis, ggavelis@gbigelow.org) for more information if you want to run nextflow yourself.
 */
@@ -27,7 +27,7 @@ params.num_inputs = 10
 params.outdir = "results"
 
 workflow {
-    CH_num_pair_AND_tar = Channel.fromPath("./input/real_sags/*.gz")
+    CH_num_pair_AND_tar = Channel.fromPath("./input/real/*.gz")
             .flatten()                                                                                      // Emit each demultiplexed fastq as its own object. E.g. blahblah_R1.fastq.gz
             .map { file -> tuple( file.simpleName.toString().replaceAll(/_contigs/,''), file ) }
             //.view()
