@@ -4,7 +4,7 @@ nextflow.enable.dsl=2
 /*
 I. Inputs:
 
-A directory called ./input/ that contains several tarfiles (e.g. AG-359-G18_a5.tar.gz, AG-359-G18_a22.tar.gz, ).
+A directory called ./input/sim/ that contains several tarfiles (e.g. AG-359-G18_a5.tar.gz, AG-359-G18_a22.tar.gz, ).
 
 Each of these tarfiles is a zipped "experiment" folder. (There are 58 experiments in all.)
 
@@ -27,11 +27,11 @@ III. So what does this pipeline do?
 2. Finds ORFs using Prokka
 3. Uses BLAST between ORFs to see whether homology is still detectable between mutated genomes, as the mutation levels increase.
 4. Integrates this homology info with ANI, resulting in a table that will let you address the above question.
-5. So in total, get 58 tables, for the 58 experiments.
+5. So in total, get 56 tables, for the 56 experiments.
 
 
 IV. What command did I use to run this nextflow job?
-nextflow run orfs_vs_ani.nf
+nextflow run sim_ORFvANI.nf
 
 BTW: ask me (Greg Gavelis, ggavelis@gbigelow.org) for more information if you want to run nextflow yourself.
 */
