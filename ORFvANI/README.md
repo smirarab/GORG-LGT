@@ -10,9 +10,9 @@
 * NOTE: The only methological differences between real_ORFvANI.nf and sim_ORFvANI.nf is that first takes a *list* of genomes, and the second takes a list of *zipped directories* of genomes (to allow iteration over multiple simulated genome experiments)
   
 ### What do these pipelines do?
-They take either real genomes (i.e. with HGT) or simulated genomes (HGT-free). Then they tabulate the number of orthologous genes shared between genomes, as a function of ANI.
+They take either real genomes (i.e. with LGT) or simulated genomes (LGT-free). Then they tabulate the number of orthologous genes shared between genomes, as a function of ANI.
 ### Why?
-To track how homology (or its detectability) erodes as genomes diverge in sequence space. Calculating DIGS (DIfferential Gene Share) requires a comparison of how this erodes in genomes with vs. without HGT.
+To track how homology (or its detectability) erodes as genomes diverge in sequence space. Calculating DIGS (DIfferential Gene Share) requires a comparison of how this erodes in genomes with vs. without LGT.
 
 #### The basic steps:
 1. Each nextflow pipeline takes a set of genomes.
