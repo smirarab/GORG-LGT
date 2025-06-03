@@ -35,6 +35,9 @@ co = read.csv('Table_S1_80pct-comp_contains-16S.csv')
 co$Genome_completeness_. = co$Genome_completeness_./100
 head(co)
 
+summary(co[co$Genome_completeness_.>.97,"Contigs_count"])
+summary(co[co$Genome_completeness_.>.8 & co$Genome_completeness_.<.97,"Contigs_count"])
+
 cob = rbind( data.frame(SAG = union(unique(bdsim$qsag),unique(bdsim$ssag)),
                   Genome_completeness_.=1 ),
        co[,c("SAG","Genome_completeness_.")])
@@ -196,13 +199,13 @@ ggplot(aes(y=  adjusted ,
                        data=bdrmim[bdrmim$similarity=="X99",
                                    c("gndbin","variable","type", "adjusted")],
                        fun.aggregate = mean),
-            size=1)+
+            linewidth=1.5)+
   geom_ribbon(aes(ymin=Low, y=Med, ymax=Hi,x=GND/100,color="Model (80% CI alpha)"),
               data=dcast(GND+type~alpha,data=model[,c("GND", "X99","type", "alpha")],value.var = "X99"), 
-              size=0.2,alpha=0.3,fill="#EE60BB",show.legend = F)+
+              size=0.15,alpha=0.2,fill="#EE60BB",show.legend = F)+
   geom_line(aes(y=Med,x=GND/100, color="Model (median alpha)"),
             data=dcast(GND+type~alpha,data=model[,c("GND", "X99","type", "alpha")],value.var = "X99"),
-            size=1,alpha=0.8)+
+            linewidth=1.5,alpha=0.8)+
   scale_x_continuous(name="GND",labels=percent)+
   scale_linetype_manual(name=expression(alpha),values=c(3,1,2))+
   scale_color_manual(name="",values = c("gray50","#1055EE","#FF60AA","#BB3333","#770010"))+
@@ -211,7 +214,7 @@ ggplot(aes(y=  adjusted ,
   facet_wrap(.~type)+
   theme(legend.position = c(.8,.7),panel.grid.minor = element_blank())+
   coord_cartesian(xlim = c(0,0.27))
-ggsave("FigureS1.pdf",width=9,height = 4.5)
+ggsave("FigureS1.png",width=9,height = 4.5)
 ggsave("FigureS1.pdf",width=9,height = 4.5)
 # Figure S1, panel a
 
