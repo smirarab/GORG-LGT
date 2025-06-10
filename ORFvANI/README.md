@@ -42,19 +42,22 @@ To track how homology (or its detectability) erodes as genomes diverge in sequen
 
 #### Inputs for sim2_ORFvANI_imcompleteness.nf:
 * This pipeline takes a directory with 29 zipped sets of simulated genomes. (As above, we call each set an "experiment")
-* Each experiment is provided as a tarball named something like "AG-359-G18.tar.gz"
+* Each experiment is provided as a tarball named something like:
+  * AG-359-G18.tar.gz
 * Each tarball contains a source (i.e. natural) genome's proteome named like "AG-359-G18_contigs.faa", as well as 31 subfolders.
 * <i> What are the 31 subfolders?</i>
 * Each reflects an artificial genome that has been back translated from the source proteome. The 31 folders differ in the extent of simulated mutation; between 0 and 2%, reflected by the "_gnd" suffix.
-* E.g. genomes in the folder named like "mutated_BLOSUM62_AG-359-G18_a5_gnd001" have been back translated from AG-359-G18.faa, with %0.1 rate of random mutations added.
+* E.g. genomes in the folder named like...
+  *  mutated_BLOSUM62_AG-359-G18_a5_gnd001
+* ...have been back translated from AG-359-G18.faa, with %0.1 of random mutations added.
 * <i>Where are the genomes?</i>
 * Each folder contains six genomes, named like (for example):
-*  mutated.fasta
-*  mutated_p20_s1.fasta
-*  mutated_p13_s2.fasta
-*  mutated_p19_s3.fasta
-*  mutated_p13_s4.fasta
-*  mutated_p13_s5.fasta
+  *  mutated.fasta
+  *  mutated_p20_s1.fasta
+  *  mutated_p13_s2.fasta
+  *  mutated_p19_s3.fasta
+  *  mutated_p13_s4.fasta
+  *  mutated_p13_s5.fasta
 *  <i>Where does incompleteness factor into this?</i>
 * Except for "mutated.fasta," each fasta has had random regions of the genome removed to simulate SAG incompleteness.
 * The extent of incompleteness is reflected by "_p", and the iteration is reflected by "_s".
