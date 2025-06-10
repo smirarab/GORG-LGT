@@ -5,6 +5,7 @@
 * **input/**
    * **real/** - A subdirectory with real genomes from the GORG Tropics dataset
    * **sim/** - A subdirectory with zipped sets of simulated genomes, which were prepared in the [GNDSim](GNDSim) section
+   * **sim2_incompleteness/** - Subdirectory for zipped sets of simulated "incomplete" genomes
 * **real_ORFvANI.nf** A nextflow pipeline that analyzes *real* genomes to tabulate the number of ORFs as a function of ANI.
 * **sim_ORFvANI.nf** -- A nextflow pipeline that analyzes *simulated* genomes " " " " "
 * **sim2_ORFvANI_incompleteness.nf** -- An expansion of the sim pipeline that uses CheckM1 to also take the completeness of simulated genomes into account. (I.e. These simulated SAGs have both artificially added nucleotide substitutions AND random removal of genomic regions to simulate incompleteness).
@@ -33,16 +34,37 @@ To track how homology (or its detectability) erodes as genomes diverge in sequen
   * Each experiment is provided as a tarball named something like "AG-359-G18_a22.tar.gz"
   * The tarball contains genomes named like "AG-899-G06_a22_gnd001.fasta", "AG-899-G06_a22_gnd002.fasta", etc.
   * Expects genome sequence names in default SPAdes format, like ">AG-359-G18_NODE_1"
-  * What do the genome names mean?
+  * <i>What do the genome names mean?</i>
     * The rootname [AG-359-G18] is the name of a real bacterial genome from the GORG-tropics dataset.
     * The first suffix (either [a5] or [a22]) represents the alpha value used in the model that simulated point mutations.
     * The last suffix (e.g. [gnd001] vs. [gnd002]) represents the simulated genome's GND from the real genome.
   * NOTE: For each simulated genome experiment, the pipeline produces a separate table. So, 56 tables.
 
+#### Inputs for sim2_ORFvANI_imcompleteness.nf:
+* This pipeline takes a directory with 29 zipped sets of simulated genomes. (As above, we call each set an "experiment")
+* Each experiment is provided as a tarball named something like "AG-359-G18.tar.gz"
+* Each tarball contains a source (i.e. natural) genome's proteome named like "AG-359-G18_contigs.faa", as well as 31 subfolders.
+* <i> What are the 31 subfolders?</i>
+* Each reflects an artificial genome that has been back translated from the source proteome. The 31 folders differ in the extent of simulated mutation; between 0 and 2%, reflected by the "_gnd" suffix.
+* E.g. genomes in the folder named like "mutated_BLOSUM62_AG-359-G18_a5_gnd001" have been back translated from AG-359-G18.faa, with %0.1 rate of random mutations added.
+* <i>Where are the genomes?</i>
+* Each folder contains six genomes, named like (for example):
+*  mutated.fasta
+*  mutated_p20_s1.fasta
+*  mutated_p13_s2.fasta
+*  mutated_p19_s3.fasta
+*  mutated_p13_s4.fasta
+*  mutated_p13_s5.fasta
+*  <i>Where does incompleteness factor into this?</i>
+* Except for "mutated.fasta," each fasta has had random regions of the genome removed to simulate SAG incompleteness.
+* The extent of incompleteness is reflected by "_p", and the iteration is reflected by "_s".
+
+
 #### Outputs:
 Each pipeline yields tabular outputs
 1. One table for the real_ORFvANI.nf, found [here](https://github.com/smirarab/GORG-LGT/blob/master/GNDModel/220916_sag_pair_summary_shared_orfs_ani.csv.xz)
 2. 56 tables for sim_ORFvANI.nf, found [here](https://github.com/smirarab/GORG-LGT/tree/master/GNDModel/simulations)
+3. 31 tables for sim2_ORFvANI_incompleteness.nf.
    
 **Understanding the output table:**
 What do the columns mean?
@@ -100,3 +122,5 @@ BLAST version [2.7.1](https://quay.io/repository/biocontainers/blast)
 *NOTE: Compute time roughly squares with the number of input genomes* (due to BLAST and PyANI). So while it takes ~6 CPU hours to analyze 10 genomes, it will take ~3500 CPU  hours to analyze all 827 real genomes.
 
 ``nextflow run sim_ORFvANI.nf``
+
+``nextflow run sim2_ORFvANI_incompleteness.nf``
