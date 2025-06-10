@@ -7,6 +7,7 @@
    * **sim/** - A subdirectory with zipped sets of simulated genomes, which were prepared in the [GNDSim](GNDSim) section
 * **real_ORFvANI.nf** A nextflow pipeline that analyzes *real* genomes to tabulate the number of ORFs as a function of ANI.
 * **sim_ORFvANI.nf** -- A nextflow pipeline that analyzes *simulated* genomes " " " " "
+* **sim2_ORFvANI_incompleteness.nf** -- An expansion of the sim pipeline that uses CheckM1 to also take the completeness of simulated genomes into account.
 * NOTE: The only methological differences between real_ORFvANI.nf and sim_ORFvANI.nf is that first takes a directory of genomes, and the second takes a directory with 56 *zipped subdirectories* of genomes (to allow iteration over 56 simulated genome experiments)
   
 ### What do these pipelines do?
